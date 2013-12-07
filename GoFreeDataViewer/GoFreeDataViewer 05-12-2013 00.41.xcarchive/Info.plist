@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AppStoreFileSize</key>
+	<integer>790381</integer>
+	<key>AppStoreFileSizeValid</key>
+	<true/>
+	<key>ApplicationProperties</key>
+	<dict>
+		<key>ApplicationPath</key>
+		<string>Applications/GoFreeDataViewer.app</string>
+		<key>CFBundleIdentifier</key>
+		<string>com.navico.GoFreeDataViewer</string>
+		<key>CFBundleShortVersionString</key>
+		<string>1.0</string>
+		<key>CFBundleVersion</key>
+		<string>1.0</string>
+		<key>SigningIdentity</key>
+		<string>iPhone Developer: Thomas Cheney (R3YQ38XL67)</string>
+	</dict>
+	<key>ArchiveVersion</key>
+	<integer>2</integer>
+	<key>CreationDate</key>
+	<date>2013-12-05T00:41:26Z</date>
+	<key>Name</key>
+	<string>GoFreeDataViewer</string>
+	<key>SchemeName</key>
+	<string>GoFreeDataViewer</string>
+</dict>
+</plist>
