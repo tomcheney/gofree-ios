@@ -12,6 +12,7 @@
 
 @interface BANDGServiceForDeviceViewController ()
 @property NSArray *services;
+@property NSMutableDictionary *dataList;
 @property BANDGWebSocket *ws;
 - (void) receiveSocketNotification:(NSNotification *) notification;
 @end
@@ -34,11 +35,20 @@
     // as well.
     
     if ([[notification name] isEqualToString:@"SocketOpen"])
+    {
         [self.ws requestDeviceList];
+        [self.ws requestDataList];
+    }
     
     if ([[notification name] isEqualToString:@"DeviceListUpdated"])
     {
         self.services = self.ws.deviceList;
+        [self.tableView reloadData];
+    }
+    
+    if ([[notification name] isEqualToString:@"DataListUpdated"])
+    {
+        self.dataList = self.ws.dataList;
         [self.tableView reloadData];
     }
 }
@@ -56,6 +66,11 @@
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveSocketNotification:)
                                                      name:@"DeviceListUpdated"
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(receiveSocketNotification:)
+                                                     name:@"DataListUpdated"
                                                    object:nil];
         
         NSString* address = [NSString stringWithFormat:@"ws://%@:2053", self.device.IP];
@@ -87,9 +102,9 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if( self.services != nil)
+    if( self.dataList != nil)
     {
-        return [self.services count];
+        return [[self.dataList allKeys] count];
     }
     else
     {
@@ -101,10 +116,16 @@
 {
     static NSString *CellIdentifier = @"deviceEntry";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
     // Configure the cell...
-    NSDictionary *device = self.services[indexPath.row];
-    cell.textLabel.text = [device valueForKey:@"ModelId"];
+    
+    NSArray *keys = [self.dataList allKeys];
+    NSString *aKey = [keys objectAtIndex:indexPath.row];
+    
+    NSDictionary *group = [self.dataList valueForKey:aKey];
+    NSArray *list = [group valueForKey:@"list"];
+    NSString *detailText = [NSString stringWithFormat:@"%d", [list count]];
+    cell.textLabel.text = aKey;
+    cell.detailTextLabel.text = detailText;
     return cell;
 }
 

@@ -17,11 +17,13 @@
 
 @property (nonatomic, readonly) WebSocket* ws;
 @property NSArray *deviceList;
+@property NSMutableDictionary *dataList;
 - (id)init:(NSString*)address;
 
 - (void) startMyWebSocket;
 
 - (void) sendMessage:(NSString*)message;
 - (void) requestDeviceList;
+- (void) requestDataList;
 
 @end

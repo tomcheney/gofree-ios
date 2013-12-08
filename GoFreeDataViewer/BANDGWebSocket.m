@@ -15,6 +15,94 @@
 
 @implementation BANDGWebSocket
 
+static NSDictionary* dataIdDictionary = nil;
++ (NSDictionary*)getDataIdDictionary {
+    
+    if (dataIdDictionary == nil)
+        dataIdDictionary = [[NSDictionary alloc]
+                            initWithObjects:[NSArray arrayWithObjects:
+                                             @"GPS",
+                                             @"Navigation",
+                                             @"Vessel",
+                                             @"Sonar",
+                                             @"Weather",
+                                             @"Trip",
+                                             @"Time",
+                                             @"Engine",
+                                             @"Transmission",
+                                             @"FuelTank",
+                                             @"FreshWaterTank",
+                                             @"GrayWaterTank",
+                                             @"LiveWellTank",
+                                             @"OilTank",
+                                             @"BlackWaterTank",
+                                             @"EngineRoom",
+                                             @"Cabin",
+                                             @"BaitWell",
+                                             @"Refrigerator",
+                                             @"HeatingSystem",
+                                             @"Freezer",
+                                             @"Battery",
+                                             @"Rudder",
+                                             @"TrimTab",
+                                             @"ACInput",
+                                             @"DigitalSwitching",
+                                             @"Other",
+                                             @"GPSStatus",
+                                             @"RouteData",
+                                             @"SpeedDepth",
+                                             @"LogTimer",
+                                             @"Environment",
+                                             @"Wind",
+                                             @"Pilot",
+                                             @"Sailing",
+                                             @"AcOutput",
+                                             @"Charger",
+                                             @"Inverter",
+                                             nil]
+                            forKeys:[NSArray arrayWithObjects:
+                                     @"1",
+                                     @"2",
+                                     @"3",
+                                     @"4",
+                                     @"5",
+                                     @"6",
+                                     @"7",
+                                     @"8",
+                                     @"9",
+                                     @"10",
+                                     @"11",
+                                     @"12",
+                                     @"13",
+                                     @"14",
+                                     @"15",
+                                     @"16",
+                                     @"17",
+                                     @"18",
+                                     @"19",
+                                     @"20",
+                                     @"21",
+                                     @"22",
+                                     @"23",
+                                     @"24",
+                                     @"25",
+                                     @"26",
+                                     @"27",
+                                     @"28",
+                                     @"29",
+                                     @"30",
+                                     @"31",
+                                     @"32",
+                                     @"33",
+                                     @"34",
+                                     @"35",
+                                     @"36",
+                                     @"37",
+                                     @"38",
+                                     nil]];
+    return dataIdDictionary;
+}
+
 #pragma mark Web Socket
 /**
  * Called when the web socket connects and is ready for reading and writing.
@@ -64,6 +152,21 @@
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"DeviceListUpdated"
              object:self];
+            return;
+        }
+        
+        NSDictionary *dataList = [JSON objectForKey:@"DataList"];
+        if(dataList)
+        {
+            NSNumber *groupId = [dataList objectForKey:@"groupId"];
+            NSString *groupIdString = [groupId stringValue];
+            NSString *groupString = [[BANDGWebSocket getDataIdDictionary] valueForKey:groupIdString];
+            [self.dataList setObject:dataList forKey:groupString];
+
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"DataListUpdated"
+             object:self];
+            return;
         }
     }
 }
@@ -96,6 +199,18 @@
     [self.ws sendText:@"{\"DeviceListReq\":{\"DeviceTypes\":[]}}"];
 }
 
+- (void)requestDataList
+{
+    NSDictionary* dataIds = [BANDGWebSocket getDataIdDictionary];
+    NSArray *keys = [dataIds allKeys];
+    for(NSString* aKey in keys)
+    {
+        NSString *message = [NSString stringWithFormat:@"{\"DataListReq\":{\"groupId\":%@}}", aKey];
+        NSLog(@"%@", message);
+        [self.ws sendText:message];
+    }
+}
+
 @synthesize ws;
 
 #pragma mark Web Socket
@@ -123,6 +238,8 @@
         
         //open using the connect config, it will be populated with server info, such as selected protocol/etc
         ws = [WebSocket webSocketWithConfig:config queue:delegateQueue delegate:self];
+        
+        self.dataList = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
