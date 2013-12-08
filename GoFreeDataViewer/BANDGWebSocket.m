@@ -147,6 +147,23 @@ static NSDictionary* dataIdDictionary = nil;
     
     if(JSON)
     {
+        NSArray *dataArray = [JSON objectForKey:@"Data"];
+        if(dataArray)
+        {
+            for( NSDictionary* dataItem in dataArray)
+            {
+                NSNumber *dataId = [dataItem objectForKey:@"id"];
+                
+                NSString *notifyStr = [NSString stringWithFormat:@"DataRx%@", [dataId stringValue]];
+                
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:notifyStr
+                 object:self
+                 userInfo:dataItem];
+                return;
+            }
+        }
+        
         NSArray *devList = [JSON objectForKey:@"DeviceList"];
         if(devList)
         {
@@ -258,6 +275,24 @@ static NSDictionary* dataIdDictionary = nil;
         [message appendString:@"]}"];
         [self.ws sendText:message];
     }
+}
+
+
+- (void)requestData:(NSString*)dataIdString subscribe:(bool)subscribe
+{
+    if(subscribe)
+    {
+        [self.ws sendText:[NSString stringWithFormat:@"{\"DataReq\":[{\"id\":%@,\"repeat\":true}]}", dataIdString]];
+    }
+    else
+    {
+        [self.ws sendText:[NSString stringWithFormat:@"{\"DataReq\":[{\"id\":%@,\"repeat\":false}]}", dataIdString]];
+    }
+}
+
+- (void)unsubscribe:(NSString*)dataIdString
+{
+    [self.ws sendText:[NSString stringWithFormat:@"{\"UnsubscribeData\":[{\"id\":%@}]}", dataIdString]];
 }
 
 @synthesize ws;

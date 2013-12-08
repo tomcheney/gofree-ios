@@ -28,6 +28,8 @@
 - (void) requestDataList;
 - (void)requestDataInfoForId:(int)dataId;
 - (void)requestDataInfoForIds:(NSArray*)dataIds;
+- (void)requestData:(NSString*)dataIdString subscribe:(bool)subscribe;
+- (void)unsubscribe:(NSString*)dataIdString;
 
 + (NSDictionary*)getDataIdDictionary;
 

@@ -101,7 +101,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="lhr-5U-g7n" kind="push" id="rNx-K4-QSV"/>
+                                    <segue destination="lhr-5U-g7n" kind="push" identifier="ShowData" id="rNx-K4-QSV"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -116,10 +116,10 @@
             </objects>
             <point key="canvasLocation" x="1844" y="-101"/>
         </scene>
-        <!--View Controller-->
+        <!--Data Display View Controller-->
         <scene sceneID="tUM-wf-0Tc">
             <objects>
-                <viewController id="lhr-5U-g7n" sceneMemberID="viewController">
+                <viewController id="lhr-5U-g7n" customClass="BANDGDataDisplayViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="8aY-Tx-kZe"/>
                         <viewControllerLayoutGuide type="bottom" id="btZ-uC-wGl"/>
@@ -127,9 +127,26 @@
                     <view key="view" contentMode="scaleToFill" id="ja8-Jq-h4A">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="Tvi-EV-bCG">
+                                <rect key="frame" x="20" y="20" width="280" height="140"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="150"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Tvi-EV-bCG" firstAttribute="leading" secondItem="ja8-Jq-h4A" secondAttribute="leading" constant="20" id="5E1-q3-T3k"/>
+                            <constraint firstAttribute="trailing" secondItem="Tvi-EV-bCG" secondAttribute="trailing" constant="20" id="Yjn-0u-dSX"/>
+                            <constraint firstItem="Tvi-EV-bCG" firstAttribute="top" secondItem="8aY-Tx-kZe" secondAttribute="bottom" constant="20" id="huz-3F-6FM"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="V3s-cl-58m"/>
+                    <connections>
+                        <outlet property="valueLabel" destination="Tvi-EV-bCG" id="10l-ZL-SpS"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LD7-hQ-TJF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E021D4051854E8340091BDD8 /* BANDGDataListForGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E021D4041854E8340091BDD8 /* BANDGDataListForGroupViewController.m */; };
+		E021D40B185514AB0091BDD8 /* BANDGDataDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E021D40A185514AB0091BDD8 /* BANDGDataDisplayViewController.m */; };
 		E03EDE77184A411C004A5849 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E03EDE76184A411C004A5849 /* Foundation.framework */; };
 		E03EDE79184A411C004A5849 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E03EDE78184A411C004A5849 /* CoreGraphics.framework */; };
 		E03EDE7B184A411C004A5849 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E03EDE7A184A411C004A5849 /* UIKit.framework */; };
@@ -45,6 +46,8 @@
 /* Begin PBXFileReference section */
 		E021D4031854E8340091BDD8 /* BANDGDataListForGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BANDGDataListForGroupViewController.h; sourceTree = "<group>"; };
 		E021D4041854E8340091BDD8 /* BANDGDataListForGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BANDGDataListForGroupViewController.m; sourceTree = "<group>"; };
+		E021D409185514AB0091BDD8 /* BANDGDataDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BANDGDataDisplayViewController.h; sourceTree = "<group>"; };
+		E021D40A185514AB0091BDD8 /* BANDGDataDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BANDGDataDisplayViewController.m; sourceTree = "<group>"; };
 		E03EDE73184A411C004A5849 /* GoFreeDataViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoFreeDataViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E03EDE76184A411C004A5849 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E03EDE78184A411C004A5849 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -153,6 +156,8 @@
 				E021D4031854E8340091BDD8 /* BANDGDataListForGroupViewController.h */,
 				E021D4041854E8340091BDD8 /* BANDGDataListForGroupViewController.m */,
 				E0CE81FF184E8C36000E17B4 /* BANDGGoFreeService.h */,
+				E021D409185514AB0091BDD8 /* BANDGDataDisplayViewController.h */,
+				E021D40A185514AB0091BDD8 /* BANDGDataDisplayViewController.m */,
 				E0CE8200184E8C36000E17B4 /* BANDGGoFreeService.m */,
 				E065845D184B9AE60095EA9D /* BANDGWebSocket.h */,
 				E065845E184B9AE60095EA9D /* BANDGWebSocket.m */,
@@ -299,6 +304,7 @@
 				E0A0E619184FE3F300ADCD08 /* BANDGServiceForDeviceViewController.m in Sources */,
 				E0CE8201184E8C37000E17B4 /* BANDGGoFreeService.m in Sources */,
 				E021D4051854E8340091BDD8 /* BANDGDataListForGroupViewController.m in Sources */,
+				E021D40B185514AB0091BDD8 /* BANDGDataDisplayViewController.m in Sources */,
 				E03EDE87184A411C004A5849 /* BANDGAppDelegate.m in Sources */,
 				E065845F184B9AE60095EA9D /* BANDGWebSocket.m in Sources */,
 			);

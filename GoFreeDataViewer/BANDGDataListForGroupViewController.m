@@ -7,6 +7,7 @@
 //
 
 #import "BANDGDataListForGroupViewController.h"
+#import "BANDGDataDisplayViewController.h"
 #import "BANDGWebSocket.h"
 
 @interface BANDGDataListForGroupViewController ()
@@ -51,7 +52,7 @@
 {
     [super viewDidLoad];
     
-    if(self.group != nil)
+    if((self.group != nil) && (self.ws != nil))
     {
         NSNumber *groupId = [self.group objectForKey:@"groupId"];
         NSString *groupIdStr = [groupId stringValue];
@@ -157,7 +158,6 @@
 }
 */
 
-/*
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
@@ -165,8 +165,28 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"ShowData"])
+    {
+        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
+        
+        //NSArray *keys = [self.dataList allKeys];
+        //NSString *aKey = [keys objectAtIndex:indexPath.row];
+        
+        // Sort group names alphabetically
+        
+        NSNumber *aKey = [[self getListOfIds] objectAtIndex:indexPath.row];
+        NSString *idString = [aKey stringValue];
+        
+        // Get reference to the destination view controller
+        BANDGDataDisplayViewController *vc = [segue destinationViewController];
+        
+        NSDictionary *infoForId = [self.dataInfo objectForKey:idString];
+        if(infoForId != nil)
+        {
+            vc.infoForDataId = infoForId;
+            vc.ws = self.ws;
+        }
+    }
 }
-
- */
 
 @end
