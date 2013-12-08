@@ -1,27 +1,27 @@
 //
-//  BANDGServiceForDeviceViewController.m
+//  BANDGDataListForGroupViewController.m
 //  GoFreeDataViewer
 //
-//  Created by Tom Cheney on 04/12/2013.
+//  Created by Tom Cheney on 08/12/2013.
 //  Copyright (c) 2013 navico. All rights reserved.
 //
 
-//Views
-#import "BANDGServiceForDeviceViewController.h"
 #import "BANDGDataListForGroupViewController.h"
-
-//Data
-#import "BANDGGoFreeService.h"
 #import "BANDGWebSocket.h"
 
-@interface BANDGServiceForDeviceViewController ()
-@property NSArray *services;
-@property NSMutableDictionary *dataList;
-@property BANDGWebSocket *ws;
+@interface BANDGDataListForGroupViewController ()
+- (NSArray*) getListOfIds;
 - (void) receiveSocketNotification:(NSNotification *) notification;
+@property NSDictionary *dataInfo;
 @end
 
-@implementation BANDGServiceForDeviceViewController
+@implementation BANDGDataListForGroupViewController
+
+
+- (NSArray*) getListOfIds
+{
+    return [self.group objectForKey:@"list"];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -38,48 +38,33 @@
     // unless you use this method for observation of other notifications
     // as well.
     
-    if ([[notification name] isEqualToString:@"SocketOpen"])
+    if ([[notification name] isEqualToString:@"DataInfoReceived"])
     {
-        [self.ws requestDeviceList];
-        [self.ws requestDataList];
-    }
-    
-    if ([[notification name] isEqualToString:@"DeviceListUpdated"])
-    {
-        self.services = self.ws.deviceList;
-        [self.tableView reloadData];
-    }
-    
-    if ([[notification name] isEqualToString:@"DataListUpdated"])
-    {
-        self.dataList = self.ws.dataList;
+        NSLog(@"DataInfoRx");
+        self.dataInfo = self.ws.dataInfo;
         [self.tableView reloadData];
     }
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if(self.device != nil)
+    
+    if(self.group != nil)
     {
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(receiveSocketNotification:)
-                                                     name:@"SocketOpen"
-                                                   object:nil];
+        NSNumber *groupId = [self.group objectForKey:@"groupId"];
+        NSString *groupIdStr = [groupId stringValue];
+        
+        NSString *titleStr = [[BANDGWebSocket getDataIdDictionary] objectForKey:groupIdStr];
+        [self.navigationItem setTitle:titleStr];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(receiveSocketNotification:)
-                                                     name:@"DeviceListUpdated"
+                                                     name:@"DataInfoReceived"
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(receiveSocketNotification:)
-                                                     name:@"DataListUpdated"
-                                                   object:nil];
-        
-        NSString* address = [NSString stringWithFormat:@"ws://%@:2053", self.device.IP];
-        self.ws = [[BANDGWebSocket alloc] init:address];
-        [self.ws startMyWebSocket];
+        [self.ws requestDataInfoForIds:[self getListOfIds]];
     }
 
     // Uncomment the following line to preserve selection between presentations.
@@ -106,33 +91,30 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    if( self.dataList != nil)
-    {
-        return [[self.dataList allKeys] count];
-    }
-    else
-    {
-        return 0;
-    }
+    return [[self getListOfIds] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"deviceEntry";
+    static NSString *CellIdentifier = @"DataIdEntry";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    
     // Configure the cell...
+    NSNumber *aKey = [[self getListOfIds] objectAtIndex:indexPath.row];
+    NSString *idString = [aKey stringValue];
     
-    // Sort group names alphabetically
-    NSArray *sortedKeys = [[self.dataList allKeys] sortedArrayUsingSelector: @selector(compare:)];
+    NSString *titleStr = idString;
     
-    //NSArray *keys = [self.dataList allKeys];
-    NSString *aKey = [sortedKeys objectAtIndex:indexPath.row];
-    
-    NSDictionary *group = [self.dataList valueForKey:aKey];
-    NSArray *list = [group valueForKey:@"list"];
-    NSString *detailText = [NSString stringWithFormat:@"%d", [list count]];
-    cell.textLabel.text = aKey;
-    cell.detailTextLabel.text = detailText;
+    if(self.dataInfo != nil)
+    {
+        NSDictionary *infoForId = [self.dataInfo objectForKey:idString];
+        if(infoForId != nil)
+        {
+            titleStr = [infoForId objectForKey:@"lname"];
+        }
+    }
+
+    cell.textLabel.text = titleStr;
     return cell;
 }
 
@@ -175,6 +157,7 @@
 }
 */
 
+/*
 #pragma mark - Navigation
 
 // In a story board-based application, you will often want to do a little preparation before navigation
@@ -182,27 +165,8 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    // Make sure your segue name in storyboard is the same as this line
-    if ([[segue identifier] isEqualToString:@"ShowDataForGroup"])
-    {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        
-        //NSArray *keys = [self.dataList allKeys];
-        //NSString *aKey = [keys objectAtIndex:indexPath.row];
-        
-        // Sort group names alphabetically
-        NSArray *sortedKeys = [[self.dataList allKeys] sortedArrayUsingSelector: @selector(compare:)];
-        NSString *aKey = [sortedKeys objectAtIndex:indexPath.row];
-        
-        NSDictionary *group = [self.dataList valueForKey:aKey];
-        
-        // Get reference to the destination view controller
-        BANDGDataListForGroupViewController *vc = [segue destinationViewController];
-        
-        // Pass any objects to the view controller here, like...
-        vc.group = group;
-        vc.ws = self.ws;
-    }
 }
+
+ */
 
 @end

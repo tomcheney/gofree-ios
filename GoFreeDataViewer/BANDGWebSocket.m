@@ -59,6 +59,7 @@ static NSDictionary* dataIdDictionary = nil;
                                              @"AcOutput",
                                              @"Charger",
                                              @"Inverter",
+                                             @"Unknown",
                                              nil]
                             forKeys:[NSArray arrayWithObjects:
                                      @"1",
@@ -99,6 +100,7 @@ static NSDictionary* dataIdDictionary = nil;
                                      @"36",
                                      @"37",
                                      @"38",
+                                     @"40",
                                      nil]];
     return dataIdDictionary;
 }
@@ -160,11 +162,33 @@ static NSDictionary* dataIdDictionary = nil;
         {
             NSNumber *groupId = [dataList objectForKey:@"groupId"];
             NSString *groupIdString = [groupId stringValue];
+            NSArray *list = [dataList objectForKey:@"list"];
+            if([list count] > 0)
+            {
+                NSLog(@"Data available in %@", groupIdString);
+            }
+            
             NSString *groupString = [[BANDGWebSocket getDataIdDictionary] valueForKey:groupIdString];
             [self.dataList setObject:dataList forKey:groupString];
 
             [[NSNotificationCenter defaultCenter]
              postNotificationName:@"DataListUpdated"
+             object:self];
+            return;
+        }
+        
+        NSArray *dataInfoArray = [JSON objectForKey:@"DataInfo"];
+        if(dataInfoArray)
+        {
+            for( NSDictionary* dataInfo in dataInfoArray)
+            {
+                NSNumber *dataId = [dataInfo objectForKey:@"id"];
+                NSString *dataIdString = [dataId stringValue];
+                [self.dataInfo setObject:dataInfo forKey:dataIdString];
+            }
+            
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:@"DataInfoReceived"
              object:self];
             return;
         }
@@ -206,7 +230,32 @@ static NSDictionary* dataIdDictionary = nil;
     for(NSString* aKey in keys)
     {
         NSString *message = [NSString stringWithFormat:@"{\"DataListReq\":{\"groupId\":%@}}", aKey];
-        NSLog(@"%@", message);
+        [self.ws sendText:message];
+    }
+}
+
+- (void)requestDataInfoForId:(int)dataId
+{
+    NSString *message = [NSString stringWithFormat:@"{\"DeviceInfoReq\":[%d]}", dataId];
+    [self.ws sendText:message];
+}
+
+- (void)requestDataInfoForIds:(NSArray*)dataIds
+{
+    if( [dataIds count] > 0 )
+    {
+        NSMutableString *message = [NSMutableString stringWithCapacity:1000];
+        [message appendString:@"{\"DataInfoReq\":["];
+        
+        int i = 0;
+        NSString *idString = [dataIds[i] stringValue];
+        [message appendString:[NSString stringWithFormat:@"%@", idString]];
+        for( i = 1; i < [dataIds count]; i++)
+        {
+            idString = [dataIds[i] stringValue];
+            [message appendString:[NSString stringWithFormat:@",%@", idString]];
+        }
+        [message appendString:@"]}"];
         [self.ws sendText:message];
     }
 }
@@ -240,6 +289,7 @@ static NSDictionary* dataIdDictionary = nil;
         ws = [WebSocket webSocketWithConfig:config queue:delegateQueue delegate:self];
         
         self.dataList = [[NSMutableDictionary alloc] init];
+        self.dataInfo = [[NSMutableDictionary alloc] init];
     }
     return self;
 }

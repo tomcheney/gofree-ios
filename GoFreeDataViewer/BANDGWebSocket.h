@@ -18,6 +18,7 @@
 @property (nonatomic, readonly) WebSocket* ws;
 @property NSArray *deviceList;
 @property NSMutableDictionary *dataList;
+@property NSMutableDictionary *dataInfo;
 - (id)init:(NSString*)address;
 
 - (void) startMyWebSocket;
@@ -25,5 +26,9 @@
 - (void) sendMessage:(NSString*)message;
 - (void) requestDeviceList;
 - (void) requestDataList;
+- (void)requestDataInfoForId:(int)dataId;
+- (void)requestDataInfoForIds:(NSArray*)dataIds;
+
++ (NSDictionary*)getDataIdDictionary;
 
 @end
