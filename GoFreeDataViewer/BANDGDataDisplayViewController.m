@@ -31,14 +31,35 @@
     // as well.
     NSLog(@"DataRx");
     NSDictionary *rxData = [notification userInfo];
-    NSNumber *dataId = [rxData objectForKey:@"id"];
-    NSString *valid = [rxData objectForKey:@"valid"];
-    //if([validityStr isEqualToString:valid])
+    NSString *valid = [NSString stringWithFormat:@"%@",[rxData objectForKey:@"valid"]];
+    
+    if( self.valueLabel == nil ) {
+        NSLog(@"Null label");
+    }
+    
+    NSString *unitStr = [self.infoForDataId objectForKey:@"unit"];
+    if([[NSString stringWithString:unitStr] isEqualToString:@"&deg;"])
+    {
+        unitStr = @"\u00B0";
+    }
+    
+    NSString *labelText;
+    if([valid isEqualToString:@"1"])
     {
         NSString *valueStr = [rxData objectForKey:@"valStr"];
         NSLog(@"Val = %@",valueStr);
-        self.valueLabel.text = valueStr;
+        labelText = [NSString stringWithString:valueStr];
     }
+    else
+    {
+        labelText = @"---";
+    }
+    
+    labelText = [NSString stringWithFormat:@"%@%@",labelText, unitStr];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.valueLabel setText:labelText];
+    });
 }
 
 - (void)viewDidLoad
