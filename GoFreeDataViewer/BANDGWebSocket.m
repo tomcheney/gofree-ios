@@ -282,7 +282,11 @@ static NSDictionary* dataIdDictionary = nil;
 {
     if(subscribe)
     {
-        [self.ws sendText:[NSString stringWithFormat:@"{\"DataReq\":[{\"id\":%@,\"repeat\":true}]}", dataIdString]];
+        NSString *message = [NSString stringWithFormat:@"{\"DataReq\":[{\"id\":%@,\"repeat\":true}]}", dataIdString];
+        
+        [self.ws sendText:message];
+        NSLog(@"%@", message);
+
     }
     else
     {

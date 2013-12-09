@@ -36,6 +36,7 @@
     //if([validityStr isEqualToString:valid])
     {
         NSString *valueStr = [rxData objectForKey:@"valStr"];
+        NSLog(@"Val = %@",valueStr);
         self.valueLabel.text = valueStr;
     }
 }
@@ -47,11 +48,11 @@
     
     if((self.infoForDataId != nil) && (self.ws != nil))
     {
-        NSNumber *dataId = [self.infoForDataId objectForKey:@"id"];
-        NSString *dataIdStr = [dataId stringValue];
-        
         NSString *titleStr = [self.infoForDataId objectForKey:@"sname"];
         [self.navigationItem setTitle:titleStr];
+        
+        NSNumber *dataId = [self.infoForDataId objectForKey:@"id"];
+        NSString *dataIdStr = [dataId stringValue];
         
         NSString *notifyStr = [NSString stringWithFormat:@"DataRx%@", dataIdStr];
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -67,6 +68,22 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Navigation
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    if((self.infoForDataId != nil) && (self.ws != nil))
+    {
+        NSNumber *dataId = [self.infoForDataId objectForKey:@"id"];
+        NSString *dataIdStr = [dataId stringValue];
+        NSString *notifyStr = [NSString stringWithFormat:@"DataRx%@", dataIdStr];
+        
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:notifyStr object:nil];
+        
+        [self.ws unsubscribe:dataIdStr];
+    }
 }
 
 @end
